@@ -1,17 +1,22 @@
 //**************************************************************//
 //  Author: doc@dawning.ca
+//  Modified by: michaelzs111@gmail.com
 //**************************************************************//
 using namespace std;
 #include "LED.cpp"
 #include "Color.cpp"
+#include <FastLED.h>
 
 //##################################################################
 //## Main Class ####################################################
 //##################################################################
 
-#define l_R    3    //PWM pin for RED
-#define l_G    5    //PWM pin for GREEN
-#define l_B    6    //PWM pin for BLUE
+#define NUM_LEDS 60
+#define DATA_PIN 6
+//#define CLOCK_PIN 5
+//#define l_R    3    //PWM pin for RED
+//#define l_G    5    //PWM pin for GREEN
+//#define l_B    6    //PWM pin for BLUE
 
 #define BAUD_RATE					9600
 #define NUMBER_OF_SPACES_BEFORE_PWM_IN_SET_CMD		2
@@ -21,14 +26,14 @@ using namespace std;
 #define DEFAULT_MIN_BRIGHTNESS_FOR_SINGLE_COLOR_CYCLE	96
 #define DEFAULT_CYCLES_PER_STEP				100
 
-#define NAME_WHITE	"WHITE"
-#define	NAME_RED	"RED"
-#define NAME_GREEN	"GREEN"
-#define NAME_BLUE	"BLUE"
-#define	NAME_LIGHTBLUE	"LIGHTBLUE"
-#define NAME_YELLOW	"YELLOW"
-#define NAME_PURPLE	"PURPLE"
-#define NAME_STANDBY	"STANDBY"
+//#define NAME_WHITE	"WHITE"
+//#define	NAME_RED	"RED"
+//#define NAME_GREEN	"GREEN"
+//#define NAME_BLUE	"BLUE"
+//#define	NAME_LIGHTBLUE	"LIGHTBLUE"
+//#define NAME_YELLOW	"YELLOW"
+//#define NAME_PURPLE	"PURPLE"
+//#define NAME_STANDBY	"STANDBY"
 
 
 
@@ -37,16 +42,18 @@ void refreshLEDs();
 void refreshLEDState(LED led);
 
 //Globals////
-LED LEDS[3];
-Color WHITE;
-Color RED;
-Color GREEN;
-Color BLUE;
-Color LIGHTBLUE;
-Color YELLOW;
-Color PURPLE;
-Color OFF;
-Color STANDBY;
+CRGB leds[NUM_LEDS];
+
+//LED LEDS[3];
+//Color WHITE;
+//Color RED;
+//Color GREEN;
+//Color BLUE;
+//Color LIGHTBLUE;
+//Color YELLOW;
+//Color PURPLE;
+//Color OFF;
+//Color STANDBY;
 String inputString;
 
 //HypnoOrb Components
@@ -70,16 +77,24 @@ void refreshLEDs() {
 
 //Arduino's firmware start of execution
 void setup() {
+  //WS2811,WS2812,WS2812b
+  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+  
+  //APA102
+  //FastLED.addLeds<APA102>(leds, NUM_LEDS);  //Comment line 15 and this line if using hardware clock and data
+  //FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN>(leds, NUM_LEDS); //Uncomment line 16 and this line for software clock 
+  //FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, RGB, DATA_RATE_MHZ(12)>(leds, NUM_LEDS); //Uncomment for slower 12MHz option
+  
 	//Create color constants
-	WHITE.initialize(255, 255, 48);
-	RED.initialize(255, 0, 0);
-	GREEN.initialize(0, 255, 0);
-	BLUE.initialize(0, 0, 255);
-	LIGHTBLUE.initialize(0, 166, 255);
-	YELLOW.initialize(255, 255, 0);
-	PURPLE.initialize(255, 0, 255);
-	OFF.initialize(0, 0 ,0);
-	STANDBY.initialize(16, 0, 0);
+	//WHITE.initialize(255, 255, 48);
+	//RED.initialize(255, 0, 0);
+	//GREEN.initialize(0, 255, 0);
+	//BLUE.initialize(0, 0, 255);
+	//LIGHTBLUE.initialize(0, 166, 255);
+	//YELLOW.initialize(255, 255, 0);
+	//PURPLE.initialize(255, 0, 255);
+	//OFF.initialize(0, 0 ,0);
+	//STANDBY.initialize(16, 0, 0);
 
 
 	//Setup for each LED
@@ -206,17 +221,17 @@ void cycleOn() {
 }
 
 void interpretInput(String input) {
-	if (inputString.startsWith("ON")) setColor(BLUE);
-	if (inputString.startsWith("OFF")) setColor(OFF);
+	if (inputString.startsWith("ON")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Blue) //setColor(BLUE);
+	if (inputString.startsWith("OFF")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Black)  //setColor(OFF);
 	if (inputString.startsWith("SET")) setLED(inputString);
-	if (inputString.startsWith(NAME_WHITE)) setColor(WHITE);
-	if (inputString.startsWith(NAME_RED)) setColor(RED);
-	if (inputString.startsWith(NAME_GREEN)) setColor(GREEN);
-	if (inputString.startsWith(NAME_BLUE)) setColor(BLUE);
-	if (inputString.startsWith(NAME_LIGHTBLUE)) setColor(LIGHTBLUE);
-	if (inputString.startsWith(NAME_YELLOW)) setColor(YELLOW);
-	if (inputString.startsWith(NAME_PURPLE)) setColor(PURPLE);
-	if (inputString.startsWith(NAME_STANDBY)) setColor(STANDBY);
+	if (inputString.startsWith("WHITE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::White) //setColor(WHITE);
+	if (inputString.startsWith("RED")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Red) //setColor(RED);
+	if (inputString.startsWith("GREEN")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Green)  //setColor(GREEN);
+	if (inputString.startsWith("BLUE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Blue)  //setColor(BLUE);
+	if (inputString.startsWith("LIGHTBLUE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::LightBlue)  //setColor(LIGHTBLUE);
+	if (inputString.startsWith("YELLOW")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Yellow)  //setColor(YELLOW);
+	if (inputString.startsWith("PURPLE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Purple)  //setColor(PURPLE);
+	if (inputString.startsWith("STANDBY")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Maroon) //setColor(STANDBY);
 	if (inputString.startsWith("CYCLEON")) cycleOn();
 	if (inputString.startsWith("CYCLEOFF")) hypnoOrb=false;
 	if (inputString.startsWith("CYCLEWHITE")) setForWhiteCycle();
@@ -320,7 +335,8 @@ void serviceHypnoOrbIfNecessary() {
 
 //Main
 void loop() {
-	refreshLEDs();
+	//refreshLEDs();
+  FastLED.show();
 	serviceInputIfNecessary();
 	serviceHypnoOrbIfNecessary();
 }
