@@ -62,7 +62,6 @@ void setup() {
   //FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, RGB, DATA_RATE_MHZ(12)>(leds, NUM_LEDS); //Uncomment for slower 12MHz option
 
 	Serial.begin(BAUD_RATE);
-	resetColorParameters();
 	hypnoOrbAscending = true;
 	hypnoOrbDeltaSubject = &LEDS[1];
 	cyclesSinceLastStep = 0;
@@ -78,24 +77,9 @@ void setup() {
 //## Functions #####################################################
 //##################################################################
 
-void resetColorParameters() {
-	cyclesPerStep = DEFAULT_CYCLES_PER_STEP;
-	minBrightness = DEFAULT_MIN_BRIGHTNESS;
-	hypnoOrb = false;
-	for (int i=0;i<3;i++) {
-		LEDS[i].minPWM = 0;
-		LEDS[i].maxPWM = 255;
-		LEDS[i].enable();
-	}
-}
-
 void printLEDs() {
-	Serial.print("LED # ");
-	Serial.print(i);
-	Serial.print(", value: ");
-	Serial.print(LEDS[i].getValue());
-	Serial.print(", state: ");
-	Serial.println(LEDS[i].activated);
+	Serial.print("LED Changed: ");
+	Serial.print(leds[0]);
 }
 
 char* findSpaceDelimitedSubstring(String input, int numberOfLeadingSpaces) {
@@ -143,7 +127,6 @@ void setLED(String input) {
 }
 
 void cycleOn() {
-	resetColorParameters();
 	hypnoOrb=true;
 }
 
@@ -169,25 +152,10 @@ void interpretInput(String input) {
 }
 
 void setForWhiteCycle() {
-	resetColorParameters();
-	LEDS[0].minPWM = 128;
-	LEDS[1].minPWM = 128;
-	LEDS[2].minPWM = 96;
 	hypnoOrb = true;
 }
 
 void setForSingleColorCycle(int ledNumber) {
-	resetColorParameters();
-	//cyclesPerStep = 30;
-	minBrightness = DEFAULT_MIN_BRIGHTNESS_FOR_SINGLE_COLOR_CYCLE;
-	for (int i=0;i<3;i++) {
-		if (i == ledNumber) {
-			LEDS[i].minPWM = minBrightness;
-			LEDS[i].maxPWM = 255;
-		} else {
-			LEDS[i].disable();
-		}
-	}
 	hypnoOrb = true;
 }
 
@@ -204,19 +172,6 @@ void serviceInputIfNecessary() {
 			inputString = "";
 		}
 	}
-}
-
-//This function is intended to prevent all colours from ever going below the min threshold
-bool isNotOkayToDescendFurther(bool preference) {
-	int brightnessSum = 0;
-	for (int i=0;i<3;i++) {
-		LED* led = &LEDS[i];
-		brightnessSum += led->getValue();
-	}
-	if (brightnessSum <= minBrightness) {
-		return true;
-	} 
-	return preference;
 }
 
 //Grabs a suitable random LED, disregards inactive LEDs
@@ -240,7 +195,7 @@ void serviceHypnoOrbIfNecessary() {
 		int newLEDNumber = getRandomLED();
 		int newDirection = random(0,2);
 		hypnoOrbDeltaSubject = &LEDS[newLEDNumber];
-		hypnoOrbAscending = isNotOkayToDescendFurther((boolean)(newDirection));
+		hypnoOrbAscending = 
 	}
 
 	//Increment cycle counter if necessary
