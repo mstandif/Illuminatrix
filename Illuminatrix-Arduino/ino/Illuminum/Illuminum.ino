@@ -23,10 +23,6 @@ CRGB leds[NUM_LEDS];
 CRGBPalette16 currentPalette;
 TBlendType    currentBlending;
 
-//#define l_R    3    //PWM pin for RED
-//#define l_G    5    //PWM pin for GREEN
-//#define l_B    6    //PWM pin for BLUE
-
 #define BAUD_RATE					9600
 #define NUMBER_OF_SPACES_BEFORE_RED_IN_SET_CMD    1
 #define NUMBER_OF_SPACES_BEFORE_GREEN_IN_SET_CMD  2
@@ -34,12 +30,6 @@ TBlendType    currentBlending;
 //#define DEFAULT_MIN_BRIGHTNESS				500
 //#define DEFAULT_MIN_BRIGHTNESS_FOR_SINGLE_COLOR_CYCLE	96
 #define DEFAULT_CYCLES_PER_STEP				100
-
-
-
-//Function Prototypes////
-void refreshLEDs();
-void refreshLEDState(LED led);
 
 //Globals////
 CRGB leds[NUM_LEDS];
@@ -60,11 +50,6 @@ int stepsPerHypnoOrbChange;
 //##################################################################
 //## Init functions ################################################
 //##################################################################
-void refreshLEDs() {
-	for(int i=0;i<3;i++) {
-		LEDS[i].refreshLED();
-	}
-}
 
 //Arduino's firmware start of execution
 void setup() {
@@ -75,11 +60,6 @@ void setup() {
   //FastLED.addLeds<APA102>(leds, NUM_LEDS);  //Comment line 15 and this line if using hardware clock and data
   //FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN>(leds, NUM_LEDS); //Uncomment line 16 and this line for software clock 
   //FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, RGB, DATA_RATE_MHZ(12)>(leds, NUM_LEDS); //Uncomment for slower 12MHz option
-
-	//Setup for each LED
-	LEDS[0].initialize(NAME_RED, l_R, true, 0, 255, 0);
-	LEDS[1].initialize(NAME_GREEN, l_G, true, 0, 255, 0);
-	LEDS[2].initialize(NAME_BLUE, l_B, true, 0, 255, 180);
 
 	Serial.begin(BAUD_RATE);
 	resetColorParameters();
@@ -282,7 +262,6 @@ void serviceHypnoOrbIfNecessary() {
 
 //Main
 void loop() {
-	//refreshLEDs();
   FastLED.show();
 	serviceInputIfNecessary();
 	serviceHypnoOrbIfNecessary();
