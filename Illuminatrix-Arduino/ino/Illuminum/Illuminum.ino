@@ -184,22 +184,19 @@ char* findSpaceDelimitedSubstring(String input, int numberOfLeadingSpaces) {
 }
 
 void setLED(String input) {
-	//SET LED# PWM-MOD ENABLE
-	//"SET {0-2} {0-9} {0-1}"
-	int mode = atoi(findSpaceDelimitedSubstring(input, NUMBER_OF_SPACES_BEFORE_PWM_IN_SET_CMD));
-	int ledNumber = atoi(findSpaceDelimitedSubstring(input, NUMBER_OF_SPACES_BEFORE_LED_NUMBER_IN_SET_CMD));
-	int status = atoi(findSpaceDelimitedSubstring(input, NUMBER_OF_SPACES_BEFORE_STATUS_IN_SET_CMD));
-	LED* led = &LEDS[ledNumber];
-	if (status > 0) led->enable();
-	else led->disable();
-	led->setValue(mode);
+	//SET    RED     GRN     BLU
+	//"SET {0-255} {0-255} {0-255}"
+	int red = atoi(findSpaceDelimitedSubstring(input, NUMBER_OF_SPACES_BEFORE_PWM_IN_SET_CMD));
+	int green = atoi(findSpaceDelimitedSubstring(input, NUMBER_OF_SPACES_BEFORE_LED_NUMBER_IN_SET_CMD));
+	int blue = atoi(findSpaceDelimitedSubstring(input, NUMBER_OF_SPACES_BEFORE_STATUS_IN_SET_CMD));
+  fill_solid( &(leds[i]), NUM_LEDS, CRGB(red, green, blue));
 
-	Serial.print("Changed LED #");
-	Serial.print(ledNumber);
-	Serial.print(", with mode ");
-	Serial.print(mode);
-	Serial.print(", and status ");
-	Serial.println(status);
+	Serial.print("Changed LED: ");
+	Serial.print(red);
+	Serial.print(", ");
+	Serial.print(green);
+	Serial.print(", ");
+  Serial.print(blue);
 }
 
 void setColor(Color color) {
@@ -221,17 +218,17 @@ void cycleOn() {
 }
 
 void interpretInput(String input) {
-	if (inputString.startsWith("ON")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Blue) //setColor(BLUE);
-	if (inputString.startsWith("OFF")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Black)  //setColor(OFF);
+	if (inputString.startsWith("ON")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Blue); //setColor(BLUE);
+	if (inputString.startsWith("OFF")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Black);  //setColor(OFF);
 	if (inputString.startsWith("SET")) setLED(inputString);
-	if (inputString.startsWith("WHITE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::White) //setColor(WHITE);
-	if (inputString.startsWith("RED")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Red) //setColor(RED);
-	if (inputString.startsWith("GREEN")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Green)  //setColor(GREEN);
-	if (inputString.startsWith("BLUE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Blue)  //setColor(BLUE);
-	if (inputString.startsWith("LIGHTBLUE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::LightBlue)  //setColor(LIGHTBLUE);
-	if (inputString.startsWith("YELLOW")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Yellow)  //setColor(YELLOW);
-	if (inputString.startsWith("PURPLE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Purple)  //setColor(PURPLE);
-	if (inputString.startsWith("STANDBY")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Maroon) //setColor(STANDBY);
+	if (inputString.startsWith("WHITE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::White); //setColor(WHITE);
+	if (inputString.startsWith("RED")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Red); //setColor(RED);
+	if (inputString.startsWith("GREEN")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Green);  //setColor(GREEN);
+	if (inputString.startsWith("BLUE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Blue);  //setColor(BLUE);
+	if (inputString.startsWith("LIGHTBLUE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::LightBlue);  //setColor(LIGHTBLUE);
+	if (inputString.startsWith("YELLOW")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Yellow);  //setColor(YELLOW);
+	if (inputString.startsWith("PURPLE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Purple);  //setColor(PURPLE);
+	if (inputString.startsWith("STANDBY")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Maroon); //setColor(STANDBY);
 	if (inputString.startsWith("CYCLEON")) cycleOn();
 	if (inputString.startsWith("CYCLEOFF")) hypnoOrb=false;
 	if (inputString.startsWith("CYCLEWHITE")) setForWhiteCycle();
