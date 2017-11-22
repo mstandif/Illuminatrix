@@ -12,8 +12,8 @@ using namespace std;
 //## Main Class ####################################################
 //##################################################################
 
-#define NUM_LEDS 60
-#define DATA_PIN 6
+#define NUM_LEDS 30
+#define DATA_PIN 4
 //#define CLOCK_PIN 5
 #define BRIGHTNESS  64
 #define LED_TYPE    WS2811
@@ -32,9 +32,10 @@ TBlendType    currentBlending;
 #define DEFAULT_CYCLES_PER_STEP				100
 
 //Globals////
-CRGB leds[NUM_LEDS];
+//CRGB leds[NUM_LEDS];
 
-String inputString;
+char inputString[20];
+int count = 0;
 
 //HypnoOrb Components
 boolean hypnoOrb;
@@ -45,6 +46,7 @@ int cyclesSinceLastStep;
 int minBrightness;
 int stepsSinceChange;
 int stepsPerHypnoOrbChange;
+boolean upDate;
 
 
 //##################################################################
@@ -62,25 +64,20 @@ void setup() {
   //FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, RGB, DATA_RATE_MHZ(12)>(leds, NUM_LEDS); //Uncomment for slower 12MHz option
 
 	Serial.begin(BAUD_RATE);
-	hypnoOrbAscending = true;
-	hypnoOrbDeltaSubject = &LEDS[1];
-	cyclesSinceLastStep = 0;
-	stepsSinceChange = 0;
-	stepsPerHypnoOrbChange = 96;
+	//hypnoOrbAscending = true;
+	//hypnoOrbDeltaSubject = &LEDS[1];
+	//cyclesSinceLastStep = 0;
+	//stepsSinceChange = 0;
+	//stepsPerHypnoOrbChange = 96;
+  upDate = true;
 
-	Serial.println("Illuminatrix greets you.");
-	setForSingleColorCycle(2);
+	Serial.println("Illuminum online.");
 } //end setup
 
 
 //##################################################################
 //## Functions #####################################################
 //##################################################################
-
-void printLEDs() {
-	Serial.print("LED Changed: ");
-	Serial.print(leds[0]);
-}
 
 char* findSpaceDelimitedSubstring(String input, int numberOfLeadingSpaces) {
 	int start = 0;
@@ -116,7 +113,7 @@ void setLED(String input) {
 	int red = atoi(findSpaceDelimitedSubstring(input, NUMBER_OF_SPACES_BEFORE_RED_IN_SET_CMD));
 	int green = atoi(findSpaceDelimitedSubstring(input, NUMBER_OF_SPACES_BEFORE_GREEN_IN_SET_CMD));
 	int blue = atoi(findSpaceDelimitedSubstring(input, NUMBER_OF_SPACES_BEFORE_BLUE_IN_SET_CMD));
-  fill_solid( &(leds[i]), NUM_LEDS, CRGB(red, green, blue));
+  fill_solid(leds, NUM_LEDS, CRGB(red, green, blue));
 
 	Serial.print("Changed LED: ");
 	Serial.print(red);
@@ -124,38 +121,86 @@ void setLED(String input) {
 	Serial.print(green);
 	Serial.print(", ");
   Serial.print(blue);
+  Serial.print("\n");
 }
 
 void cycleOn() {
 	hypnoOrb=true;
 }
 
-void interpretInput(String input) {
-	if (inputString.startsWith("ON")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Blue); 
-	if (inputString.startsWith("OFF")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Black);  
-	if (inputString.startsWith("SET")) setLED(inputString);
-	if (inputString.startsWith("WHITE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::White); 
-	if (inputString.startsWith("RED")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Red); 
-	if (inputString.startsWith("GREEN")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Green);  
-	if (inputString.startsWith("BLUE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Blue);  
-	if (inputString.startsWith("LIGHTBLUE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::LightBlue);
-	if (inputString.startsWith("YELLOW")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Yellow);  
-	if (inputString.startsWith("PURPLE")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Purple);  
-	if (inputString.startsWith("STANDBY")) fill_solid( &(leds[i]), NUM_LEDS, CRGB::Maroon); 
-	if (inputString.startsWith("CYCLEON")) cycleOn();
-	if (inputString.startsWith("CYCLEOFF")) hypnoOrb=false;
-	if (inputString.startsWith("CYCLEWHITE")) setForWhiteCycle();
-	if (inputString.startsWith("CYCLERED")) setForSingleColorCycle(0);
-	if (inputString.startsWith("CYCLEGREEN")) setForSingleColorCycle(1);
-	if (inputString.startsWith("CYCLEBLUE")) setForSingleColorCycle(2);
-	printLEDs();
+void interpretInput() {
+	if (!strcmp(inputString, "ON")) {
+	  fill_solid(leds, NUM_LEDS, CRGB::Blue); 
+	  upDate = true; 
+	  Serial.println("LED Changed: BLUE");
+	}
+	else if (!strcmp(inputString, "OFF")) {
+	  fill_solid(leds, NUM_LEDS, CRGB::Black); 
+	  upDate = true; 
+	  Serial.println("LED Changed: BLACK");
+	}
+	else if (!strcmp(inputString, "WHITE")) {
+	  fill_solid(leds, NUM_LEDS, CRGB::White); 
+	  upDate = true; 
+	  Serial.println("LED Changed: WHITE");
+	}
+	else if (!strcmp(inputString, "RED")) {
+	  fill_solid(leds, NUM_LEDS, CRGB::Red); 
+	  upDate = true; 
+	  Serial.println("LED Changed: RED");
+	}
+	else if (!strcmp(inputString, "GREEN")) {
+	  fill_solid(leds, NUM_LEDS, CRGB::Green); 
+	  upDate = true; 
+	  Serial.println("LED Changed: GREEN");
+	}
+	else if (!strcmp(inputString, "BLUE")) {
+	  fill_solid(leds, NUM_LEDS, CRGB::Blue); 
+	  upDate = true; 
+	  Serial.println("LED Changed: BLUE");
+	}
+	else if (!strcmp(inputString, "LIGHTBLUE")) {
+	  fill_solid(leds, NUM_LEDS, CRGB::LightBlue); 
+	  upDate = true; 
+	  Serial.println("LED Changed: LIGHTBLUE");
+	}
+	else if (!strcmp(inputString, "YELLOW")) {
+	  fill_solid(leds, NUM_LEDS, CRGB::Yellow); 
+	  upDate = true; 
+	  Serial.println("LED Changed: YELLOW");
+	}
+	else if (!strcmp(inputString, "PURPLE")) {
+	  fill_solid(leds, NUM_LEDS, CRGB::Purple); 
+	  upDate = true; 
+	  Serial.println("LED Changed: PURPLE");
+	}
+	else if (!strcmp(inputString, "STANDBY")) {
+	  fill_solid(leds, NUM_LEDS, CRGB::Maroon); 
+	  upDate = true; 
+	  Serial.println("LED Changed: MAROON");
+	}
+	else if (!strcmp(inputString, "CYCLEON")) cycleOn();
+	else if (!strcmp(inputString, "CYCLEOFF")) hypnoOrb=false;
+	else if (!strcmp(inputString, "CYCLEWHITE")) setForWhiteCycle();
+	else if (!strcmp(inputString, "CYCLERED")) setForSingleColorCycle();
+	else if (!strcmp(inputString, "CYCLEGREEN")) setForSingleColorCycle();
+	else if (!strcmp(inputString, "CYCLEBLUE")) setForSingleColorCycle();
+  else if ((inputString[0] = "S") && (inputString[1] = "E") && (inputString[2] = "T")) {
+    setLED(inputString); 
+    upDate = true; 
+    Serial.println("LED Changed: CUSTOM");
+  }
+  else {
+    Serial.println("Not Found");
+  }
+  //Serial.println(inputString);
 }
 
 void setForWhiteCycle() {
 	hypnoOrb = true;
 }
 
-void setForSingleColorCycle(int ledNumber) {
+void setForSingleColorCycle() {
 	hypnoOrb = true;
 }
 
@@ -164,26 +209,25 @@ void serviceInputIfNecessary() {
 
 	if (Serial.available() > 0) {
 		char ch = (char)Serial.read();
-		inputString += ch;
+		//inputString += ch;
 		Serial.print(ch);
 		if (ch == '\r' || ch == ';') {
+      inputString[count] = '\0';
 			Serial.print('\n');
-			interpretInput(inputString);
-			inputString = "";
+			interpretInput();
+      Serial.println("Interpreted");
+			//inputString = "";
+      count = 0;
 		}
+    else if (ch == '\n') {
+      //nothing left-over char from terminal input
+    }
+    else {
+      inputString[count] = ch;
+      count++;
+    }
+  //Serial.print('.');
 	}
-}
-
-//Grabs a suitable random LED, disregards inactive LEDs
-int getRandomLED() {
-	int led = random(0,3); //gets a random int 0 <= led < 3
-	int tryLimit = 10;
-	while (!LEDS[led].activated) {
-		if (tryLimit < 0) break;
-		tryLimit--;
-		led = random(0,3);
-	}
-	return led;
 }
 
 void serviceHypnoOrbIfNecessary() {
@@ -191,11 +235,6 @@ void serviceHypnoOrbIfNecessary() {
 
 	if (stepsSinceChange > stepsPerHypnoOrbChange) {
 		stepsSinceChange = 0;
-		//int newLEDNumber = random(0,3);
-		int newLEDNumber = getRandomLED();
-		int newDirection = random(0,2);
-		hypnoOrbDeltaSubject = &LEDS[newLEDNumber];
-		hypnoOrbAscending = 
 	}
 
 	//Increment cycle counter if necessary
@@ -217,7 +256,11 @@ void serviceHypnoOrbIfNecessary() {
 
 //Main
 void loop() {
-  FastLED.show();
+  if(upDate) {
+    FastLED.show();
+    upDate = false;
+    Serial.println("Updated Strand");
+  }
 	serviceInputIfNecessary();
-	serviceHypnoOrbIfNecessary();
+	//serviceHypnoOrbIfNecessary();
 }
