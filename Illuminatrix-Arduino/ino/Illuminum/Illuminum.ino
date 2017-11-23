@@ -1,10 +1,8 @@
 //**************************************************************//
-//  Author: doc@dawning.ca
-//  Modified by: michaelzs111@gmail.com
+//  Created by: michaelzs111@gmail.com
+//  Based on Illuminatrix by doc@dawning.ca
 //**************************************************************//
 using namespace std;
-#include "LED.cpp"
-#include "Color.cpp"
 #include <FastLED.h>
 
 
@@ -27,12 +25,9 @@ TBlendType    currentBlending;
 #define NUMBER_OF_SPACES_BEFORE_RED_IN_SET_CMD    1
 #define NUMBER_OF_SPACES_BEFORE_GREEN_IN_SET_CMD  2
 #define NUMBER_OF_SPACES_BEFORE_BLUE_IN_SET_CMD	  3
-//#define DEFAULT_MIN_BRIGHTNESS				500
-//#define DEFAULT_MIN_BRIGHTNESS_FOR_SINGLE_COLOR_CYCLE	96
 #define DEFAULT_CYCLES_PER_STEP				100
 
 //Globals////
-//CRGB leds[NUM_LEDS];
 
 char inputString[20];
 int count = 0;
