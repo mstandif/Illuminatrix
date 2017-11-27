@@ -28,20 +28,24 @@ TBlendType    currentBlending;
 #define DEFAULT_CYCLES_PER_STEP				100
 
 //Globals////
-
 char inputString[20];
 int count = 0;
+boolean upDate;
+
+//colorCycle Components
+int cycleMode = 0;
+int cycle = 0;
+boolean cycleAscend = false;
+int oldRand1 = 0;
+int oldRand2 = 0;
 
 //HypnoOrb Components
 boolean hypnoOrb;
 boolean hypnoOrbAscending;
-LED* hypnoOrbDeltaSubject;
 int cyclesPerStep;
 int cyclesSinceLastStep;
-int minBrightness;
 int stepsSinceChange;
 int stepsPerHypnoOrbChange;
-boolean upDate;
 
 
 //##################################################################
@@ -50,6 +54,8 @@ boolean upDate;
 
 //Arduino's firmware start of execution
 void setup() {
+  delay(3000); // power-up safety delay
+  
   //WS2811,WS2812,WS2812b
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
   
@@ -58,6 +64,7 @@ void setup() {
   //FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN>(leds, NUM_LEDS); //Uncomment line 16 and this line for software clock 
   //FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, RGB, DATA_RATE_MHZ(12)>(leds, NUM_LEDS); //Uncomment for slower 12MHz option
 
+  FastLED.setBrightness(BRIGHTNESS);
 	Serial.begin(BAUD_RATE);
 	//hypnoOrbAscending = true;
 	//hypnoOrbDeltaSubject = &LEDS[1];
@@ -65,6 +72,9 @@ void setup() {
 	//stepsSinceChange = 0;
 	//stepsPerHypnoOrbChange = 96;
   upDate = true;
+
+  currentPalette;
+  currentBlending = LINEARBLEND;
 
 	Serial.println("Illuminum online.");
 } //end setup
@@ -221,8 +231,18 @@ void serviceInputIfNecessary() {
       inputString[count] = ch;
       count++;
     }
-  //Serial.print('.');
 	}
+}
+
+void SetupTotallyRandomPalette() {
+  int newRand1 = random8();
+  int newRand2 = random8();
+  
+  for (int i = 0; i < 16; i++) {
+    currentPalette[i] = CHSV(oldRand1 + (i*((newRand1 - oldRand1) / 16)), 255, oldRand2 + (i*((newRand2 - oldRand2) / 16)));
+  }
+  oldRand1 = newRand1;
+  oldRand2 = newRand2;
 }
 
 void serviceHypnoOrbIfNecessary() {
@@ -251,11 +271,20 @@ void serviceHypnoOrbIfNecessary() {
 
 //Main
 void loop() {
-  if(upDate) {
+  uint8_t secondHand = (millis() / 1000) % 60;
+  static uint8_t lastSecond = 99;
+  
+  if (upDate) {
     FastLED.show();
     upDate = false;
     Serial.println("Updated Strand");
   }
+  if( lastSecond != secondHand) {
+    lastSecond = secondHand;
+  }
+  
 	serviceInputIfNecessary();
-	//serviceHypnoOrbIfNecessary();
 }
+
+
+
