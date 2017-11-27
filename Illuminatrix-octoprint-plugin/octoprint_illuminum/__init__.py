@@ -7,7 +7,7 @@ import os
 import serial
 from subprocess import call,Popen
 
-class IlluminatrixPlugin(octoprint.plugin.StartupPlugin,
+class IlluminumPlugin(octoprint.plugin.StartupPlugin,
 			octoprint.plugin.TemplatePlugin,
 			octoprint.plugin.EventHandlerPlugin,
 			octoprint.plugin.BlueprintPlugin,
@@ -28,21 +28,21 @@ class IlluminatrixPlugin(octoprint.plugin.StartupPlugin,
 			port = self._settings.get(["Port"])
 			self.setSerialConfig(port)
 			Popen("echo -n \";"+cmd_str+";\" > "+port, shell=True)
-			return flask.make_response("Illuminatrix "+cmd_str+" mode", 750)
+			return flask.make_response("Illuminum "+cmd_str+" mode", 750)
 		except:
 			return
 
 	##StartupPlugin
 	def on_after_startup(self):
-		self._logger.info("Illuminatrix plugin lives")
+		self._logger.info("Illuminum plugin lives")
 
 	##TemplatePlugin
 	def get_template_configs(self):
 		return [
 			dict(type="tab", custom_bindings=False),
 			dict(type="settings", custom_bindings=False), 
-			#dict(type="tab", template="Illuminatrix_tab.jinja2")
-			#dict(type="settings", template="Illuminatrix_settings.jinja2")
+			#dict(type="tab", template="Illuminum_tab.jinja2")
+			#dict(type="settings", template="Illuminum_settings.jinja2")
 		]
 
 	##BlueprintPlugin
@@ -154,8 +154,8 @@ class IlluminatrixPlugin(octoprint.plugin.StartupPlugin,
 		]
 
 # If you want your plugin to be registered within OctoPrint under a different name than what you defined in setup.py
-# ("OctoPrint-PluginIlluminatrix"), you may define that here. Same goes for the other metadata derived from setup.py that
+# ("OctoPrint-PluginIlluminum"), you may define that here. Same goes for the other metadata derived from setup.py that
 # can be overwritten via __plugin_xyz__ control properties. See the documentation for that.
 
-__plugin_name__ = "Illuminatrix"
-__plugin_implementation__ = IlluminatrixPlugin()
+__plugin_name__ = "Illuminum"
+__plugin_implementation__ = IlluminumPlugin()

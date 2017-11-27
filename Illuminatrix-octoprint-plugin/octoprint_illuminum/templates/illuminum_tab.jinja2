@@ -2,8 +2,8 @@
 	<!--<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"> </script>-->
 	<script>	
 		function callApi(request) {
-			console.log("Illuminatrix says: hey..."+request);
-			var apiPrefix = "/plugin/illuminatrix/";
+			console.log("Illuminum says: hey..."+request);
+			var apiPrefix = "/plugin/illuminum/";
 			$.get(apiPrefix + request);
 		}
 	</script>
@@ -31,7 +31,7 @@
 	</style>
 
 
-	<h3>Illuminatrix Manual Controls</h3>
+	<h3>Illuminum Manual Controls</h3>
 	<input type="submit" value="On" onclick="callApi('on');">
 	<input type="submit" value="Off" onclick="callApi('off');">
 	<input type="submit" value="Standby" onclick="callApi('standby');">
