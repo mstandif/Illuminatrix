@@ -1,5 +1,5 @@
 # Illuminum
-Illuminum is a fork of the older <a href="https://hackaday.io/project/9191-illuminatrix">Illuminatrix</a> lighting system for 3D printers. This fork is designed for use on smart LED's such as the popular WS2812b or APA102. Presently it mimics all the functionality of the original, but there are plans for new features being added in the future.
+Illuminum is a fork of the older <a href="https://hackaday.io/project/9191-illuminatrix">Illuminatrix</a> lighting system for 3D printers. This fork is designed for use on smart LED's such as the popular WS2812b or APA102, rather than traditional strips that require PWM and power MOSFETs. Presently it mimics all the functionality of the original, but there are plans for new features being added in the future.
 
 ## Demo
 <i>Click the GIF below to see the detailed demo video on YouTube.</i>
